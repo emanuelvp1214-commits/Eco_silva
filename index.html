@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1b4d2e">
+  <title>ECO SILVA - Productos Sostenibles</title>
+  <style>
+    :root{--verde-principal:#1b4d2e;--verde-claro:#8fbc8f;--fondo:#f5f4ef;--texto:#2c3e50;--blanco:#fff;--sombra:0 4px 6px rgba(0,0,0,.08);--rojo:#e74c3c}
+    *{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif}
+    body{background:var(--fondo);color:var(--texto);line-height:1.6}
+    button,a{-webkit-tap-highlight-color:transparent}
+    .top-navbar{background:var(--blanco);padding:.8rem 2rem;position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;gap:1rem;box-shadow:var(--sombra);border-bottom:3px solid var(--verde-principal)}
+    .brand-logo-area{display:flex;align-items:center;gap:12px;min-width:0}
+    .brand-logo-img{height:50px;width:50px;object-fit:cover;border-radius:50%}
+    .brand-name{font-size:1.4rem;font-weight:800;color:var(--verde-principal);letter-spacing:1.5px}
+    .cart-icon-btn{background:var(--verde-principal);border:0;color:#fff;padding:.65rem 1.1rem;border-radius:20px;font-size:.95rem;cursor:pointer;display:flex;align-items:center;gap:8px;font-weight:bold;white-space:nowrap}
+    .cart-icon-btn:hover,.btn-agregar:hover{background:#12351f}
+    .cart-badge{background:#e67e22;color:#fff;border-radius:50%;padding:2px 7px;font-size:.8rem}
+    .brand-hero-section{background:#e9f0e8;padding:2.5rem 1rem;text-align:center;border-bottom:1px solid #d4e3d3;margin-bottom:2rem}
+    .hero-logo-img{width:130px;height:130px;object-fit:cover;border-radius:50%;margin-bottom:1rem;filter:drop-shadow(0 4px 6px rgba(0,0,0,.1))}
+    .brand-hero-section h1{color:var(--verde-principal);font-size:clamp(1.7rem,4vw,2.6rem);margin-bottom:.3rem}
+    .brand-hero-section .subtext{font-size:1.1rem;color:var(--verde-principal);font-weight:600;max-width:650px;margin:0 auto;font-style:italic}
+    .nosotros-container{max-width:1200px;margin:0 auto 3rem;padding:0 1rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:1.5rem}
+    .info-card{background:#fff;padding:2rem;border-radius:10px;box-shadow:var(--sombra);border-left:5px solid var(--verde-principal);display:flex;flex-direction:column}
+    .info-card h3{color:var(--verde-principal);font-size:1.2rem;margin-bottom:.8rem}
+    .info-card p{font-size:.92rem;color:#444;text-align:justify}
+    .direccion-container,.catalogo-container{max-width:1200px;margin:0 auto 3rem;padding:0 1rem}
+    .direccion-card{background:#fff;border-radius:10px;padding:1.8rem;box-shadow:var(--sombra);border-top:4px solid var(--verde-principal);text-align:center}
+    .direccion-card h2{color:var(--verde-principal);font-size:1.3rem;margin-bottom:.5rem}
+    .direccion-card p{color:#555}
+    .catalogo-header{text-align:center;margin-bottom:2rem;padding-bottom:.8rem;border-bottom:2px solid var(--verde-claro)}
+    .catalogo-header h2{color:var(--verde-principal);text-transform:uppercase;font-size:clamp(1.2rem,3vw,1.5rem);letter-spacing:1px}
+    .catalogo-header p{color:#666;margin-top:.4rem}
+    .grid-productos{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:1.5rem}
+    .card{background:#fff;border-radius:10px;overflow:hidden;box-shadow:var(--sombra);display:flex;flex-direction:column;justify-content:space-between;border:1px solid #eaeaea;transition:transform .2s,box-shadow .2s}
+    .card:hover{transform:translateY(-4px);box-shadow:0 6px 12px rgba(0,0,0,.1)}
+    .card-img-wrapper{width:100%;height:230px;overflow:hidden;background:#f7f6f2;display:flex;align-items:center;justify-content:center;padding:10px}
+    .card-img-wrapper img{width:100%;height:100%;object-fit:contain}
+    .card-body{padding:1.2rem;display:flex;flex-direction:column;flex-grow:1}
+    .card-title{font-size:1.05rem;color:var(--verde-principal);margin-bottom:.4rem;text-transform:uppercase}
+    .card-desc{font-size:.9rem;color:#666;margin-bottom:1rem;flex-grow:1}
+    .card-price{font-size:1.25rem;font-weight:bold;color:#1a3c17;margin-bottom:.8rem}
+    .btn-agregar{background:var(--verde-principal);color:#fff;border:0;padding:.75rem;border-radius:6px;cursor:pointer;font-size:.95rem;width:100%;font-weight:600}
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150;display:none}
+    .overlay.active{display:block}
+    .cart-modal{position:fixed;top:0;right:-105%;width:100%;max-width:420px;height:100dvh;background:#fff;box-shadow:-4px 0 10px rgba(0,0,0,.2);z-index:200;transition:right .3s ease;display:flex;flex-direction:column}
+    .cart-modal.active{right:0}
+    .cart-header{background:var(--verde-principal);color:#fff;padding:1rem;display:flex;justify-content:space-between;align-items:center}
+    .close-cart{background:none;border:0;color:#fff;font-size:1.8rem;cursor:pointer;line-height:1}
+    .cart-items{flex-grow:1;overflow-y:auto;padding:1rem}
+    .cart-item{display:flex;justify-content:space-between;align-items:center;gap:1rem;border-bottom:1px solid #ddd;padding:.8rem 0}
+    .cart-item-info{min-width:0}.cart-item-info h4{font-size:.9rem;color:var(--texto)}.cart-item-info p{font-size:.85rem;color:#666}
+    .cart-controls{display:flex;align-items:center;gap:6px;flex-shrink:0}
+    .btn-qty{background:#eee;border:0;width:28px;height:28px;border-radius:4px;cursor:pointer;font-weight:bold}
+    .btn-remove{background:none;border:0;color:var(--rojo);cursor:pointer;font-size:1.2rem;margin-left:3px}
+    .cart-footer{padding:1.2rem;border-top:2px solid #eee;background:#fafafa}
+    .cart-total{display:flex;justify-content:space-between;font-size:1.2rem;font-weight:bold;margin-bottom:1rem}
+    .btn-checkout{background:#25d366;color:#fff;border:0;width:100%;padding:.85rem;border-radius:6px;font-size:1rem;font-weight:bold;cursor:pointer}
+    .btn-checkout:disabled{opacity:.55;cursor:not-allowed}
+    .empty-cart-msg{text-align:center;color:#777;margin-top:2rem}
+    footer{text-align:center;padding:2.5rem 1rem;background:var(--verde-principal);color:#fff;margin-top:2rem;font-size:.9rem}
+    .social-links{display:flex;justify-content:center;flex-wrap:wrap;gap:1.2rem;margin-top:1.2rem}
+    .social-links a{color:#fff;text-decoration:none;display:flex;align-items:center;justify-content:center;width:44px;height:44px;background:rgba(255,255,255,.15);border-radius:50%;transition:background .3s,transform .2s}
+    .social-links a:hover{background:var(--verde-claro);color:var(--verde-principal);transform:translateY(-3px)}
+    .social-links svg{width:22px;height:22px;fill:currentColor}
+    .footer-note{font-size:.78rem;opacity:.85;margin-top:1rem}
+    @media(max-width:600px){.top-navbar{padding:.7rem .9rem}.brand-logo-img{height:38px;width:38px}.brand-name{font-size:1.05rem;letter-spacing:.7px}.cart-icon-btn{padding:.55rem .75rem;font-size:.85rem}.brand-hero-section{padding:2rem .9rem}.info-card{padding:1.4rem}.card-img-wrapper{height:210px}.cart-modal{max-width:none}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <header class="top-navbar">
+    <div class="brand-logo-area">
+      <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=150" alt="Imagen representativa de ECO SILVA" class="brand-logo-img">
+      <span class="brand-name">ECO SILVA</span>
+    </div>
+    <button class="cart-icon-btn" id="openCartBtn" type="button" aria-label="Abrir carrito">
+      🛒 Carrito <span class="cart-badge" id="cartCount">0</span>
+    </button>
+  </header>
+
+  <section class="brand-hero-section">
+    <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400" alt="Naturaleza y sostenibilidad" class="hero-logo-img">
+    <h1>ECO SILVA</h1>
+    <p class="subtext">“Creando un futuro más limpio, un producto a la vez.”</p>
+  </section>
+
+  <section class="nosotros-container" aria-label="Sobre Eco Silva">
+    <article class="info-card">
+      <h3>🌱 Misión</h3>
+      <p>Transformar residuos y materiales en desuso —como papel, cartón, plástico y empaques Tetra Pak— en productos funcionales, creativos y de calidad para el estudio, el hogar y la oficina. En Eco Silva combinamos el trabajo artesanal con la conciencia ecológica para promover el reciclaje, reducir el impacto ambiental e impulsar la economía circular dentro de nuestra comunidad educativa y local.</p>
+    </article>
+    <article class="info-card">
+      <h3>🚀 Visión</h3>
+      <p>Para el año 2028, consolidar a Eco Silva como un modelo referente de emprendimiento escolar y juvenil en economía circular, reconocido por la innovación en el diseño sustentable, la calidad artesanal de sus productos y su liderazgo en campañas de educación y sensibilización ambiental.</p>
+    </article>
+    <article class="info-card">
+      <h3>♻️ Sostenibilidad y responsabilidad ambiental</h3>
+      <p>Priorizamos el uso de materiales recuperados y técnicas amigables con el entorno en cada etapa de producción para reducir la huella ecológica.</p>
+    </article>
+    <article class="info-card">
+      <h3>💡 Creatividad e innovación útil</h3>
+      <p>Reinventamos los residuos mediante el diseño artesanal, convirtiendo materiales en desuso en soluciones prácticas, estéticas y duraderas.</p>
+    </article>
+  </section>
+
+  <section class="direccion-container">
+    <div class="direccion-card">
+      <h2>📍 Nuestra ubicación</h2>
+      <p><strong>Institución Educativa José Asunción Silva</strong></p>
+      <p>Calle 118 #64CC-68, barrio Boyacá Las Brisas</p>
+    </div>
+  </section>
+
+  <main class="catalogo-container">
+    <div class="catalogo-header">
+      <h2>Catálogo de productos</h2>
+      <p>Productos elaborados con creatividad y conciencia ambiental.</p>
+    </div>
+    <div class="grid-productos" id="productosContainer"></div>
+  </main>
+
+  <div class="overlay" id="overlay"></div>
+  <aside class="cart-modal" id="cartModal" role="dialog" aria-modal="true" aria-label="Carrito de compras">
+    <div class="cart-header">
+      <h3>Tu pedido ECO SILVA</h3>
+      <button class="close-cart" id="closeCartBtn" type="button" aria-label="Cerrar carrito">&times;</button>
+    </div>
+    <div class="cart-items" id="cartItemsContainer"></div>
+    <div class="cart-footer">
+      <div class="cart-total"><span>Total:</span><span id="cartTotal">$0</span></div>
+      <button class="btn-checkout" id="checkoutBtn" type="button">Pedir por WhatsApp 💬</button>
+    </div>
+  </aside>
+
+  <footer>
+    <p><strong>ECO SILVA</strong> - Nuestra promesa de sostenibilidad.</p>
+    <p>© <span id="currentYear">2026</span> ECO SILVA. Todos los derechos reservados.</p>
+    <div class="social-links" aria-label="Canales de contacto">
+      <a href="https://wa.me/573000000000" target="_blank" rel="noopener noreferrer" title="Contáctanos en WhatsApp" aria-label="WhatsApp">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.031 0C5.385 0 0 5.385 0 12.031c0 2.124.553 4.197 1.603 6.013L.003 24l6.102-1.601A11.97 11.97 0 0012.031 24c6.646 0 12.031-5.385 12.031-12.031S18.677 0 12.031 0zm0 21.932a9.88 9.88 0 01-5.039-1.378l-.361-.214-3.741.981.998-3.648-.235-.374a9.89 9.89 0 01-1.516-5.268c0-5.459 4.44-9.9 9.894-9.9 5.452 0 9.893 4.441 9.893 9.9 0 5.453-4.441 9.893-9.893 9.893zm5.422-7.41c-.298-.149-1.758-.867-2.03-.966-.273-.099-.472-.149-.67.149-.199.298-.769.966-.943 1.164-.174.199-.348.223-.646.074-.298-.149-1.26-.464-2.401-1.482-.888-.792-1.487-1.77-1.661-2.068-.174-.298-.018-.459.13-.607.134-.133.298-.348.447-.521.149-.174.199-.298.298-.497.099-.199.05-.372-.025-.521-.075-.149-.67-1.614-.918-2.209-.242-.579-.487-.501-.67-.51l-.571-.01c-.199 0-.521.074-.794.372s-1.043 1.018-1.043 2.483c0 1.465 1.067 2.88 1.216 3.078.149.199 2.1 3.206 5.088 4.496.711.307 1.266.49 1.698.627.714.227 1.364.195 1.877.118.573-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.174-1.413-.075-.124-.273-.198-.571-.347z"/></svg>
+      </a>
+      <a href="mailto:ecosilva.i.e.jas@gmail.com" title="Envíanos un correo" aria-label="Correo electrónico">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L12 9.573l8.073-6.08C21.691 2.279 24 3.434 24 5.457z"/></svg>
+      </a>
+      <a href="https://instagram.com/ecosilva.i.ejas" target="_blank" rel="noopener noreferrer" title="Síguenos en Instagram" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.2 0 3.667-.014 4.947-.072 4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948 0-3.259-.014-3.668-.072-4.948-.2-4.358-2.618-6.78-6.98-6.98C15.668.014 15.26 0 12 0z"/></svg>
+      </a>
+    </div>
+    <p class="footer-note">Antes de publicar, verifica que los datos de contacto y los enlaces sean los correctos.</p>
+  </footer>
+
+  <script>
+    // Cambia este número por el WhatsApp real, con código de país y sin signos ni espacios.
+    const WHATSAPP_NUMBER = "573000000000";
+
+    // Productos de ejemplo: reemplaza nombres, precios e imágenes por el catálogo real.
+    const products = [
+      {id:1,name:"Organizador reciclado",description:"Organizador artesanal para útiles y escritorio.",price:8000,image:"https://images.unsplash.com/photo-1544816155-12df9643f363?w=600"},
+      {id:2,name:"Libreta ecológica",description:"Libreta para apuntes y actividades escolares.",price:10000,image:"https://images.unsplash.com/photo-1531346878377-a5be20888e57?w=600"},
+      {id:3,name:"Portalápices sostenible",description:"Accesorio práctico elaborado con materiales reutilizados.",price:6000,image:"https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600"},
+      {id:4,name:"Decoración artesanal",description:"Pieza decorativa hecha de forma creativa y responsable.",price:12000,image:"https://images.unsplash.com/photo-1490312278390-ab64016e0aa9?w=600"}
+    ];
+
+    const money = amount => new Intl.NumberFormat("es-CO",{style:"currency",currency:"COP",maximumFractionDigits:0}).format(amount);
+    const productsContainer = document.getElementById("productosContainer");
+    const cartModal = document.getElementById("cartModal");
+    const overlay = document.getElementById("overlay");
+    const cartItemsContainer = document.getElementById("cartItemsContainer");
+    const cartCount = document.getElementById("cartCount");
+    const cartTotal = document.getElementById("cartTotal");
+    const checkoutBtn = document.getElementById("checkoutBtn");
+    let cart = [];
+
+    try {
+      const savedCart = JSON.parse(localStorage.getItem("ecoSilvaCart") || "[]");
+      if (Array.isArray(savedCart)) cart = savedCart.filter(item =>
+        products.some(product => product.id === item.id) &&
+        Number.isInteger(item.quantity) && item.quantity > 0
+      );
+    } catch (error) {
+      cart = [];
+    }
+
+    function renderProducts() {
+      productsContainer.innerHTML = products.map(product => `
+        <article class="card">
+          <div class="card-img-wrapper">
+            <img src="${product.image}" alt="${product.name}" loading="lazy"
+              onerror="this.onerror=null;this.src='https://placehold.co/600x400/e9f0e8/1b4d2e?text=ECO+SILVA'">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">${product.name}</h3>
+            <p class="card-desc">${product.description}</p>
+            <p class="card-price">${money(product.price)}</p>
+            <button class="btn-agregar" type="button" data-add="${product.id}">Agregar al carrito</button>
+          </div>
+        </article>`).join("");
+    }
+
+    function saveCart() {
+      try { localStorage.setItem("ecoSilvaCart", JSON.stringify(cart)); } catch (error) {}
+    }
+
+    function addToCart(id) {
+      const item = cart.find(entry => entry.id === id);
+      if (item) item.quantity += 1;
+      else cart.push({id,quantity:1});
+      updateCart();
+    }
+
+    function changeQuantity(id, delta) {
+      const item = cart.find(entry => entry.id === id);
+      if (!item) return;
+      item.quantity += delta;
+      if (item.quantity <= 0) cart = cart.filter(entry => entry.id !== id);
+      updateCart();
+    }
+
+    function removeFromCart(id) {
+      cart = cart.filter(item => item.id !== id);
+      updateCart();
+    }
+
+    function updateCart() {
+      saveCart();
+      const totalItems = cart.reduce((sum,item) => sum + item.quantity, 0);
+      cartCount.textContent = totalItems;
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '<p class="empty-cart-msg">Tu carrito está vacío. Agrega algún producto del catálogo.</p>';
+      } else {
+        cartItemsContainer.innerHTML = cart.map(item => {
+          const product = products.find(p => p.id === item.id);
+          return `<div class="cart-item">
+            <div class="cart-item-info"><h4>${product.name}</h4><p>${money(product.price)} c/u</p><p>Subtotal: ${money(product.price * item.quantity)}</p></div>
+            <div class="cart-controls">
+              <button class="btn-qty" type="button" data-minus="${item.id}" aria-label="Disminuir cantidad">−</button>
+              <span>${item.quantity}</span>
+              <button class="btn-qty" type="button" data-plus="${item.id}" aria-label="Aumentar cantidad">+</button>
+              <button class="btn-remove" type="button" data-remove="${item.id}" aria-label="Eliminar producto">×</button>
+            </div>
+          </div>`;
+        }).join("");
+      }
+      const total = cart.reduce((sum,item) => {
+        const product = products.find(p => p.id === item.id);
+        return sum + (product ? product.price * item.quantity : 0);
+      }, 0);
+      cartTotal.textContent = money(total);
+      checkoutBtn.disabled = cart.length === 0;
+    }
+
+    function openCart() {
+      cartModal.classList.add("active");
+      overlay.classList.add("active");
+      document.body.style.overflow = "hidden";
+      document.getElementById("closeCartBtn").focus();
+    }
+    function closeCart() {
+      cartModal.classList.remove("active");
+      overlay.classList.remove("active");
+      document.body.style.overflow = "";
+      document.getElementById("openCartBtn").focus();
+    }
+
+    productsContainer.addEventListener("click", event => {
+      const button = event.target.closest("[data-add]");
+      if (button) addToCart(Number(button.dataset.add));
+    });
+    cartItemsContainer.addEventListener("click", event => {
+      const minus = event.target.closest("[data-minus]");
+      const plus = event.target.closest("[data-plus]");
+      const remove = event.target.closest("[data-remove]");
+      if (minus) changeQuantity(Number(minus.dataset.minus), -1);
+      if (plus) changeQuantity(Number(plus.dataset.plus), 1);
+      if (remove) removeFromCart(Number(remove.dataset.remove));
+    });
+    document.getElementById("openCartBtn").addEventListener("click", openCart);
+    document.getElementById("closeCartBtn").addEventListener("click", closeCart);
+    overlay.addEventListener("click", closeCart);
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && cartModal.classList.contains("active")) closeCart();
+    });
+
+    checkoutBtn.addEventListener("click", () => {
+      if (cart.length === 0) return;
+      const lines = cart.map(item => {
+        const product = products.find(p => p.id === item.id);
+        return `• ${product.name} x${item.quantity} — ${money(product.price * item.quantity)}`;
+      });
+      const total = cart.reduce((sum,item) => sum + products.find(p => p.id === item.id).price * item.quantity, 0);
+      const message = `Hola, ECO SILVA. Quiero realizar este pedido:\n\n${lines.join("\n")}\n\nTotal estimado: ${money(total)}\n\nPor favor, confirmen disponibilidad y forma de entrega.`;
+      const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+      window.open(url, "_blank", "noopener,noreferrer");
+    });
+
+    document.getElementById("currentYear").textContent = new Date().getFullYear();
+    renderProducts();
+    updateCart();
+  </script>
+</body>
+</html>
